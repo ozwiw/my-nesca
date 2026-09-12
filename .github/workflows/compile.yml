@@ -19,10 +19,10 @@ jobs:
       - name: Build Project
         shell: cmd
         run: |
-          dir /s nesca_3.pro
+          powershell -Command "(gc nesca_3.pro) -replace 'RC_ICONS\s*=.*', '' | Out-File nesca_3.pro -Encoding UTF8"
           mkdir build
           cd build
-          qmake ../nesca_3.pro -spec win32-g++ || qmake ../nesca-master/nesca_3.pro -spec win32-g++
+          qmake ../nesca_3.pro -spec win32-g++
           mingw32-make
 
       - name: Pack with windeployqt
