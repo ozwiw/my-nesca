@@ -17,14 +17,14 @@ jobs:
           arch: 'win64_mingw81'
 
       - name: Build Project
-        shell: cmd
+        shell: bash
         run: |
-          echo . > nesca.ico
+          sed -i '/RC_ICONS/d' nesca_3.pro
           mkdir build
           cd build
           qmake ../nesca_3.pro -spec win32-g++
           mingw32-make
-
+          
       - name: Pack with windeployqt
         shell: cmd
         run: |
