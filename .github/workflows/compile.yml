@@ -1,0 +1,36 @@
+name: Compile Nesca EXE
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_mingw81'
+
+      - name: Build Project
+        run: |
+          mkdir build
+          cd build
+          qmake ../nesca_3.pro
+          mingw32-make release
+
+      - name: Pack with windeployqt
+        run: |
+          cd build/release
+          windeployqt nesca_3.exe --no-compiler-runtime --no-opengl-sw
+          powershell Compress-Archive -Path * -DestinationPath ../../nesca_windows.zip
+
+      - name: Upload Finished ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: nesca-ready-to-run
+          path: nesca_windows.zip
