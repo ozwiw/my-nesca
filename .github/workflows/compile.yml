@@ -17,13 +17,15 @@ jobs:
           arch: 'win64_mingw81'
 
       - name: Build Project
+        shell: cmd
         run: |
           mkdir build
           cd build
-          qmake ../nesca_3.pro
+          qmake ../nesca-master/nesca_3.pro -spec win32-g++
           mingw32-make release
 
       - name: Pack with windeployqt
+        shell: cmd
         run: |
           cd build/release
           windeployqt nesca_3.exe --no-compiler-runtime --no-opengl-sw
