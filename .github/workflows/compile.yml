@@ -19,17 +19,18 @@ jobs:
       - name: Build Project
         shell: cmd
         run: |
+          dir /s nesca_3.pro
           mkdir build
           cd build
-          qmake ../nesca-master/nesca_3.pro -spec win32-g++
-          mingw32-make release
+          qmake ../nesca_3.pro -spec win32-g++ || qmake ../nesca-master/nesca_3.pro -spec win32-g++
+          mingw32-make
 
       - name: Pack with windeployqt
         shell: cmd
         run: |
-          cd build/release
-          windeployqt nesca_3.exe --no-compiler-runtime --no-opengl-sw
-          powershell Compress-Archive -Path * -DestinationPath ../../nesca_windows.zip
+          cd build
+          windeployqt nesca_3.exe --no-compiler-runtime --no-opengl-sw || windeployqt release/nesca_3.exe --no-compiler-runtime --no-opengl-sw
+          powershell Compress-Archive -Path * -DestinationPath ../nesca_windows.zip
 
       - name: Upload Finished ZIP
         uses: actions/upload-artifact@v4
